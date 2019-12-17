@@ -74,3 +74,13 @@ app.UseSwagger();
 set ASPNETCORE_URLS=http://localhost:5050 && set ASPNETCORE_ENVIRONMENT=development && dotnet watch run
 
 netstat -abon | findStr "127.0.0.1:5000"
+
+## sql
+
+SELECT TOP (1000) [Id]
+      ,[Name]
+      ,[CategoryId]
+	  , lag(id) over (order by id) prev
+	  , lead(id) over (order by id) next
+	  , sum(Id) over (partition by CategoryId)
+  FROM [HelloApp].[dbo].[Blog]
