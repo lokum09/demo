@@ -1,4 +1,4 @@
-:: links
+## links
 
 https://www.learnentityframeworkcore.com/configuration/fluent-api/hasdefaultvalue-method
 https://entityframework.net/knowledge-base/31025967/code-first-migration--how-to-set-default-value-for-new-property-
@@ -46,7 +46,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 2.2.1
 
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 2.2.1
 
-:: ef
+### ef
 
 dotnet tool install --global dotnet-ef --version 3.0.0
 
