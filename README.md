@@ -10,13 +10,16 @@ https://www.learnentityframeworkcore.com/connection-strings
 https://joonasw.net/view/hsts-in-aspnet-core
 https://www.tutorialspoint.com/asp.net_core/asp.net_core_routing.htm
 https://www.strathweb.com/2016/06/global-route-prefix-with-asp-net-core-mvc-revisited/
+https://www.codeproject.com/Articles/5253709/All-you-need-to-know-on-Blazor-app-and-create-ASP
 
-# baza
+# database
 
 create table Blog (
 	[Id] BIGINT Identity(1, 1) NOT NULL PRIMARY KEY,
 	[Name] NVARCHAR(100) NOT NULL
 );
+
+--  insert into Blog (Name, CategoryId) values ('Blog5', 3)
 
 create table Post (
 	[Id] BIGINT Identity(1, 1) NOT NULL PRIMARY KEY,
@@ -25,6 +28,18 @@ create table Post (
 	[BlogId] BIGINT NOT NULL,
 	CONSTRAINT FK_Post_Blog foreign key ([BlogId]) references Blog ([Id]) on delete cascade
 );
+
+SELECT TOP (1000) [Id]
+      ,[Name]
+      ,[CategoryId]
+	  , lag(id) over (order by id) prev
+	  , lead(id) over (order by id) next
+	  , sum(Id) over (partition by CategoryId)
+  FROM [HelloApp].[dbo].[Blog];
+
+  select * from [dbo].[Blog] b
+  pivot (Sum(Id) for CategoryId in ([1], [2], [3])) as pb;
+
 
 ## app
 
@@ -46,7 +61,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 2.2.1
 
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 2.2.1
 
-### ef
+## ef
 
 dotnet tool install --global dotnet-ef --version 3.0.0
 
@@ -75,12 +90,53 @@ set ASPNETCORE_URLS=http://localhost:5050 && set ASPNETCORE_ENVIRONMENT=developm
 
 netstat -abon | findStr "127.0.0.1:5000"
 
-## sql
+## mvc
 
-SELECT TOP (1000) [Id]
-      ,[Name]
-      ,[CategoryId]
-	  , lag(id) over (order by id) prev
-	  , lead(id) over (order by id) next
-	  , sum(Id) over (partition by CategoryId)
-  FROM [HelloApp].[dbo].[Blog]
+public ActionResult Index(int? pageNumber)
+{
+    ProductModel model = new ProductModel();
+    model.PageNumber = (pageNumber == null ? 1 : Convert.ToInt32(pageNumber));
+    model.PageSize = 4;
+
+    List products = Product.GetSampleProducts();
+
+    if (products != null)
+    {
+        model.Products = products.OrderBy(x => x.Id)
+                  .Skip(model.PageSize * (model.PageNumber - 1))
+                  .Take(model.PageSize).ToList();
+
+        model.TotalCount = products.Count();
+        var page = (model.TotalCount / model.PageSize) - 
+                   (model.TotalCount % model.PageSize == 0 ? 1 : 0);
+        model.PagerCount = page + 1;
+    }
+
+    return View(model);
+}
+
+<table class="table table-bordered">
+<thead>
+	  <tr>
+	      <th>Product ID</th>
+	      <th>Name</th>
+	      <th>Price</th>
+	      <th>Department</th>
+	      <th>Action</th>
+	  </tr>
+</thead>
+<tbody>
+	  @foreach (var item in @Model.Products)
+	  {
+	      <tr>
+	          <th scope="row">@item.Id</th>
+	          <td>@item.Name</td>
+	          <td>@item.Price</td>
+	          <td>@item.Department</td>
+	          <td><a data-value="@item.Id" 
+
+	          href="javascript:void(0)" class="btnEdit">Edit</a></td>
+	      </tr> 
+	  }
+</tbody>
+</table>
