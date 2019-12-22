@@ -40,7 +40,8 @@ BEGIN
 		('Poland', 'Mazowsze', 'Pruszkow', 6.5)
 	) AS t ([Country], [State], [City], [Population]);
 
-	--- ROLLUP --- czyli agregaty dla hierarchii
+
+	-- ROLLUP --- czyli agregaty dla hierarchii
 
 	IF OBJECT_ID('tempdb..#Actual') IS NOT NULL
 		DROP TABLE #Actual;

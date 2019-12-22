@@ -63,6 +63,7 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 2.2.1
 
 ## ef
 
+
 dotnet tool install --global dotnet-ef --version 3.0.0
 
 -- dotnet ef dbcontext scaffold "Server=.;Database=HelloApp;User=sa;Password=sa;Integrated Security=False" Microsoft.EntityFrameworkCore.SqlServer -o Models -d -f
